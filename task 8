@@ -1,0 +1,111 @@
+
+CREATE TABLE Users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NUL,
+);
+CREATE TABLE Movies (
+    movie_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    release_year YEAR,
+    description TEXT
+);
+CREATE TABLE Media (
+    media_id INT AUTO_INCREMENT PRIMARY KEY,
+    movie_id INT,
+    media_type ENUM('Video', 'Image') NOT NULL,
+    media_url VARCHAR(255) NOT NULL,
+    FOREIGN KEY (movie_id) REFERENCES Movies(movie_id) ON DELETE CASCADE
+);
+
+CREATE TABLE Genres (
+    genre_id INT AUTO_INCREMENT PRIMARY KEY,
+    genre_name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE MovieGenres (
+    movie_id INT,
+    genre_id INT,
+    PRIMARY KEY (movie_id, genre_id),
+    FOREIGN KEY (movie_id) REFERENCES Movies(movie_id) ON DELETE CASCADE,
+    FOREIGN KEY (genre_id) REFERENCES Genres(genre_id) ON DELETE CASCADE
+);
+CREATE TABLE Reviews (
+    review_id INT AUTO_INCREMENT PRIMARY KEY,
+    movie_id INT,
+    user_id INT,
+    review_text TEXT,
+    rating INT CHECK (rating BETWEEN 1 AND 5),
+    FOREIGN KEY (movie_id) REFERENCES Movies(movie_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE Artists (
+    artist_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    bio TEXT
+);
+
+CREATE TABLE Skills (
+    skill_id INT AUTO_INCREMENT PRIMARY KEY,
+    skill_name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE ArtistSkills (
+    artist_id INT,
+    skill_id INT,
+    PRIMARY KEY (artist_id, skill_id),
+    FOREIGN KEY (artist_id) REFERENCES Artists(artist_id) ON DELETE CASCADE,
+    FOREIGN KEY (skill_id) REFERENCES Skills(skill_id) ON DELETE CASCADE
+);
+
+CREATE TABLE MovieRoles (
+    movie_id INT,
+    artist_id INT,
+    role VARCHAR(100) NOT NULL,
+    PRIMARY KEY (movie_id, artist_id, role),
+    FOREIGN KEY (movie_id) REFERENCES Movies(movie_id) ON DELETE CASCADE,
+    FOREIGN KEY (artist_id) REFERENCES Artists(artist_id) ON DELETE CASCADE
+);
+
+
+
+
+
+INSERT INTO Users (name, email) VALUES ('John Doe', 'john.doe@example.com'), ('Jane Smith', 'jane.smith@example.com');
+
+
+INSERT INTO Movies (title, release_year, description) VALUES 
+('Inception', 2010, 'A mind-bending thriller by Christopher Nolan.'),
+('Titanic', 1997, 'A tragic love story set against the sinking of the Titanic.');
+
+
+INSERT INTO Media (movie_id, media_type, media_url) VALUES
+(1, 'Video', 'http://example.com/inception-trailer.mp4'),
+(1, 'Image', 'http://example.com/inception-poster.jpg'),
+(2, 'Image', 'http://example.com/titanic-poster.jpg');
+
+
+INSERT INTO Genres (genre_name) VALUES ('Sci-Fi'), ('Romance'), ('Drama');
+
+
+INSERT INTO MovieGenres (movie_id, genre_id) VALUES (1, 1), (2, 2), (2, 3);
+
+
+INSERT INTO Reviews (movie_id, user_id, review_text, rating) VALUES
+(1, 1, 'Amazing movie with a great concept.', 5),
+(2, 2, 'Heartbreaking and beautiful.', 4);
+
+
+INSERT INTO Artists (name, bio) VALUES 
+('Leonardo DiCaprio', 'An acclaimed actor known for roles in Titanic and Inception.'),
+('Joseph Gordon-Levitt', 'Actor and filmmaker.');
+
+INSERT INTO Skills (skill_name) VALUES ('Acting'), ('Directing'), ('Screenwriting');
+
+INSERT INTO ArtistSkills (artist_id, skill_id) VALUES (1, 1), (2, 1);
+
+INSERT INTO MovieRoles (movie_id, artist_id, role) VALUES
+(1, 1, 'Dom Cobb'),
+(1, 2, 'Arthur'),
+(2, 1, 'Jack Dawson');
